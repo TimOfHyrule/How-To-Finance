@@ -375,6 +375,7 @@ function onKeyChange(v){
 
 // storage
 const SK='htf-v3';
+const DATA_VERSION=2;
 const DEF={
   income:[{name:'薪資',amt:80000,items:[]},{name:'副業',amt:5000,items:[]},{name:'投資',amt:2000,items:[]}],
   expense:[{name:'住房',amt:0,items:[{name:'房租',amt:18000,x12:false}]},{name:'交通',amt:0,items:[{name:'油錢',amt:3600,x12:false},{name:'保險',amt:2400,x12:false}]},{name:'飲食',amt:0,items:[{name:'外食',amt:6000,x12:false},{name:'採買',amt:2000,x12:false}]},{name:'水電',amt:0,items:[{name:'電費',amt:1800,x12:false},{name:'網路',amt:1200,x12:false}]},{name:'其他',amt:0,items:[{name:'娛樂',amt:3000,x12:false},{name:'醫療',amt:2000,x12:false}]}]
@@ -385,11 +386,14 @@ function loadData(){
   try{
     const s=localStorage.getItem(SK);
     const d=s?JSON.parse(s):null;
-    if(d&&d.income&&d.expense){
+    if(d&&d.income&&d.expense&&d._v===DATA_VERSION){
       D=d;txChk=d.taxChecked||{};selRgn=d.selectedRegion||null;
       if(d.lang){lang=d.lang;T=LANGS[lang];}
       if(d.customTxt)document.getElementById('custom-ta').value=d.customTxt;
-    }else D=JSON.parse(JSON.stringify(DEF));
+    }else{
+      D=JSON.parse(JSON.stringify(DEF));
+      localStorage.removeItem(SK);
+    }
   }catch(e){D=JSON.parse(JSON.stringify(DEF));}
   applyT();setSt(T.loaded);
   if(selRgn){document.getElementById('rbtn-'+selRgn).classList.add('active');recompute(false);}
@@ -399,7 +403,7 @@ function schedSave(){
   clearTimeout(saveTimer);setSt(T.saving);
   saveTimer=setTimeout(()=>{
     try{
-      localStorage.setItem(SK,JSON.stringify({...D,taxChecked:txChk,selectedRegion:selRgn,lang,customTxt:document.getElementById('custom-ta').value}));
+      localStorage.setItem(SK,JSON.stringify({...D,_v:DATA_VERSION,taxChecked:txChk,selectedRegion:selRgn,lang,customTxt:document.getElementById('custom-ta').value}));
       setSt(T.saved);
     }catch(e){setSt(T.saveErr);}
   },600);
