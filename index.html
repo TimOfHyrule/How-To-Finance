@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How-To Finance — 財務盈餘分析儀</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#F5F0E8;--cream-dark:#EDE7D9;--ink:#1A1814;--ink-mid:#3D3830;
+  --ink-light:#7A7468;--ink-faint:#B5AFA5;--accent:#C4622D;--accent-light:#E8956A;
+  --green:#1D7A5A;--red:#C43D2D;--amber:#9A6B1A;--purple:#534AB7;
+  --border:rgba(26,24,20,0.12);--border-strong:rgba(26,24,20,0.25);
+  --shadow-sm:0 1px 3px rgba(26,24,20,0.08);
+  --radius:6px;--radius-lg:10px;
+  --font-serif:'DM Serif Display',Georgia,serif;
+  --font-sans:'DM Sans',system-ui,sans-serif;
+  --font-mono:'DM Mono',monospace;
+}
+html{background:var(--cream);color:var(--ink);font-family:var(--font-sans);font-size:15px;line-height:1.6}
+body{min-height:100vh}
+input,button,textarea,select{font-family:inherit;font-size:inherit}
+button{cursor:pointer}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--cream-dark)}
+::-webkit-scrollbar-thumb{background:var(--ink-faint);border-radius:3px}
+/* HEADER */
+.site-header{background:var(--ink);color:var(--cream);position:sticky;top:0;z-index:100}
+.header-top{display:flex;align-items:center;gap:20px;padding:0 2rem;height:52px;max-width:1200px;margin:0 auto;border-bottom:1px solid rgba(255,255,255,0.07)}
+.brand{display:flex;align-items:baseline;gap:10px;flex-shrink:0;text-decoration:none}
+.brand-main{font-family:var(--font-serif);font-size:22px;color:var(--cream);letter-spacing:-.01em}
+.brand-main em{color:var(--accent-light);font-style:normal}
+.brand-sub{font-family:var(--font-mono);font-size:10px;color:rgba(245,240,232,0.35);letter-spacing:.1em;text-transform:uppercase}
+.header-spacer{flex:1}
+.lang-group{display:flex;gap:2px;flex-shrink:0}
+.lang-btn{font-size:11px;padding:3px 9px;border-radius:3px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(245,240,232,0.45);font-family:var(--font-mono);letter-spacing:.04em;transition:all .15s}
+.lang-btn:hover{background:rgba(255,255,255,0.07);color:var(--cream)}
+.lang-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.api-bar{display:flex;align-items:center;padding:10px 2rem;max-width:1200px;margin:0 auto;gap:16px}
+.api-key-wrap{flex:0 1 480px;display:flex;align-items:center;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;overflow:hidden;transition:border-color .2s}
+.api-key-wrap:focus-within{border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.08)}
+.api-key-wrap.valid{border-color:rgba(110,231,183,0.4)}
+.api-key-wrap.invalid{border-color:rgba(252,165,165,0.4)}
+.api-lbl{font-family:var(--font-mono);font-size:9px;color:rgba(245,240,232,0.3);letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;padding:0 10px 0 12px;white-space:nowrap;border-right:1px solid rgba(255,255,255,0.08)}
+.api-inp{flex:1;height:36px;padding:0 12px;background:transparent;border:none;color:var(--cream);font-family:var(--font-mono);font-size:12px;outline:none;letter-spacing:.03em}
+.api-inp::placeholder{color:rgba(245,240,232,0.2)}
+.api-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-right:12px;background:rgba(255,255,255,0.15);transition:background .3s}
+.api-key-wrap.valid .api-dot{background:#6EE7B7;box-shadow:0 0 6px rgba(110,231,183,.5)}
+.api-key-wrap.invalid .api-dot{background:#FCA5A5}
+.api-st{font-size:12px;font-family:var(--font-mono);color:rgba(245,240,232,0.3);letter-spacing:.02em}
+.api-st.ok{color:#6EE7B7}
+.api-st.err{color:#FCA5A5}
+.api-hint-right{font-size:12px;font-family:var(--font-mono);color:rgba(245,240,232,0.3);flex-shrink:0}
+.api-link{color:var(--accent-light);text-decoration:none;border-bottom:1px solid rgba(232,149,106,0.35)}
+.api-link:hover{border-color:var(--accent-light)}
+/* LAYOUT */
+.page{max-width:1200px;margin:0 auto;padding:2rem}
+.page-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2rem}
+.page-title{font-family:var(--font-serif);font-size:28px;color:var(--ink);font-weight:400}
+.page-sub{font-size:15px;color:var(--ink-light);margin-top:4px}
+.save-bdg{font-size:11px;font-family:var(--font-mono);color:var(--ink-faint);flex-shrink:0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow-sm)}
+.card-lbl{font-family:var(--font-sans);font-size:15px;font-weight:500;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-family:var(--font-mono);padding:2px 7px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase}
+.badge-amber{background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
+.badge-green{background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0}
+/* CATEGORY ROWS */
+.cat-block{margin-bottom:5px}
+.cat-row{display:flex;align-items:center;padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border);background:var(--cream);transition:border-color .15s}
+.cat-row:hover{border-color:var(--border-strong)}
+.cat-name-inp{flex:6;font-size:14px;font-weight:500;color:var(--ink);background:transparent;border:none;outline:none;padding:1px 4px;border-radius:3px;min-width:0}
+.cat-name-inp:focus{background:rgba(255,255,255,.7)}
+.cat-amt-inp{flex:4;font-size:14px;font-weight:500;background:transparent;border:none;outline:none;text-align:right;padding:1px 6px;min-width:0}
+.cat-amt-inp:focus{background:rgba(255,255,255,.7);border-radius:3px}
+.cat-amt-inp.income{color:var(--green)}
+.cat-amt-inp.expense{color:var(--red)}
+.cat-amt-disp{flex:4;font-size:14px;font-weight:500;text-align:right;padding:1px 6px;min-width:0}
+.cat-amt-disp.income{color:var(--green)}
+.cat-amt-disp.expense{color:var(--red)}
+.cat-acts{display:flex;align-items:center;gap:4px;margin-left:8px;flex-shrink:0;visibility:hidden}
+.cat-row:hover .cat-acts{visibility:visible}
+.aBtn{font-size:11px;padding:2px 8px;border-radius:4px;border:1px solid var(--border-strong);background:#fff;color:var(--ink-mid);white-space:nowrap;transition:all .15s}
+.aBtn:hover{background:var(--ink-mid);color:#fff;border-color:var(--ink-mid)}
+.aBtn.del:hover{background:transparent;border-color:var(--red);color:var(--red)}
+.sub-list{margin:3px 0 3px 16px;display:flex;flex-direction:column;gap:2px}
+.sub-row{display:flex;align-items:center;padding:3px 10px;border-radius:var(--radius);border:1px solid transparent}
+.sub-name-inp{flex:6;font-size:13px;color:var(--ink-light);background:transparent;border:none;outline:none;padding:1px 4px;min-width:0;border-radius:3px}
+.sub-name-inp:focus{background:rgba(255,255,255,.8);color:var(--ink)}
+.sub-amt-inp{flex:4;font-size:13px;color:var(--ink-mid);background:var(--cream-dark);border:1px solid var(--border);border-radius:4px;outline:none;text-align:right;padding:2px 8px;min-width:0}
+.sub-amt-inp:focus{border-color:var(--ink-mid);background:#fff;color:var(--ink)}
+.sub-x12-lbl{font-size:11px;font-family:var(--font-mono);color:var(--ink-faint);padding-left:6px;white-space:nowrap;flex-shrink:0}
+.sub-acts{display:flex;align-items:center;gap:3px;margin-left:6px;flex-shrink:0;visibility:hidden}
+.sub-row:hover .sub-acts{visibility:visible}
+.sBtn{font-size:10px;padding:1px 6px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--ink-faint);white-space:nowrap;transition:all .15s;font-family:var(--font-mono)}
+.sBtn:hover{background:var(--ink-mid);color:#fff;border-color:var(--ink-mid)}
+.sBtn.x12on{background:#EEF2FF;border-color:#A5B4FC;color:#4338CA}
+.sBtn.x12on:hover{background:#4338CA;color:#fff;border-color:#4338CA}
+.sBtn.del:hover{background:transparent;border-color:var(--red);color:var(--red)}
+.add-sub-row{display:none;align-items:center;gap:6px;margin:3px 0 3px 16px;padding:5px 8px;border-radius:var(--radius);border:1px dashed var(--border-strong)}
+.add-sub-row input[type=text]{flex:6;font-size:13px;height:28px;padding:0 7px;min-width:0;border-radius:4px;border:1px solid var(--border);background:var(--cream-dark);color:var(--ink);outline:none}
+.add-sub-row input[type=text]:focus{border-color:var(--border-strong);background:#fff}
+.add-sub-row input[type=number]{flex:4;font-size:13px;height:28px;padding:0 7px;min-width:0;border-radius:4px;border:1px solid var(--border);background:var(--cream-dark);color:var(--ink);outline:none}
+.add-sub-row input[type=number]:focus{border-color:var(--border-strong);background:#fff}
+.add-sub-row button{flex-shrink:0;font-size:12px;padding:0 10px;height:28px;border-radius:4px;border:1px solid var(--ink-mid);background:var(--ink);color:var(--cream)}
+.add-cat-row{display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.add-cat-row input[type=text]{flex:1;font-size:13px;height:32px;padding:0 8px;min-width:0;border-radius:var(--radius);border:1px solid var(--border);background:var(--cream-dark);color:var(--ink);outline:none}
+.add-cat-row input[type=text]:focus{border-color:var(--border-strong);background:#fff}
+.add-cat-row button{flex-shrink:0;font-size:13px;padding:0 12px;height:32px;border-radius:var(--radius);border:1px solid var(--border-strong);background:#fff;color:var(--ink-mid);transition:all .15s}
+.add-cat-row button:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+/* TAX */
+.tax-card{margin-bottom:20px}
+.tax-three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
+.tax-col{padding:0 24px;border-right:1px solid var(--border)}
+.tax-col:first-child{padding-left:0}
+.tax-col:last-child{padding-right:0;border-right:none}
+.sec-lbl{font-family:var(--font-sans);font-size:13px;font-weight:500;color:var(--ink-mid);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.rg-group{margin-bottom:12px}
+.rg-title{font-size:11px;color:var(--ink-faint);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border);font-family:var(--font-mono);letter-spacing:.05em}
+.rg-btn{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;width:100%;text-align:left;font-size:13px;color:var(--ink-mid);margin-bottom:4px;transition:all .15s}
+.rg-btn:hover{background:var(--cream);border-color:var(--border-strong)}
+.rg-btn.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.chk{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border-strong);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rg-btn.active .chk{background:var(--accent-light);border-color:var(--accent-light)}
+.rg-btn.active .chk::after{content:'';display:block;width:7px;height:4px;border-left:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);transform:rotate(-45deg) translateY(-1px)}
+.rg-btn.active .rg-sub{color:rgba(245,240,232,.5)}
+.rg-lbl{flex:1;font-weight:500}
+.rg-sub{font-size:11px;color:var(--ink-faint);font-family:var(--font-mono)}
+.tax-check-list{display:flex;flex-direction:column;gap:7px}
+.tax-check-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-mid)}
+.tax-check-row input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--accent)}
+.tcn{flex:1}
+.tca{color:var(--ink-faint);font-size:12px;font-family:var(--font-mono)}
+.tax-result{background:var(--cream-dark);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;font-size:13px;color:var(--ink-light);line-height:1.7;margin-top:6px}
+.tax-result strong{color:var(--ink);font-weight:500}
+/* CUSTOM COL */
+.custom-col{display:flex;flex-direction:column;gap:8px}
+#custom-ta{font-size:12px;padding:10px 12px;line-height:1.7;border-radius:var(--radius);border:1px solid var(--border);background:var(--cream-dark);color:var(--ink);resize:vertical;min-height:160px;font-family:var(--font-mono);outline:none;transition:border-color .15s;width:100%}
+#custom-ta:focus{border-color:var(--border-strong);background:#fff}
+#custom-ta:disabled{opacity:.4;cursor:not-allowed;background:var(--cream-dark)}
+.parse-row{display:flex;gap:8px;align-items:center}
+#parse-btn{font-size:13px;padding:0 14px;height:34px;border-radius:var(--radius);border:1px solid var(--accent);background:var(--accent);color:#fff;flex-shrink:0;transition:opacity .15s}
+#parse-btn:hover{opacity:.88}
+#parse-btn:disabled{opacity:.35;cursor:not-allowed}
+.parse-hint{font-size:11px;color:var(--ink-faint);font-family:var(--font-mono)}
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.metric{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;box-shadow:var(--shadow-sm)}
+.metric-lbl{font-family:var(--font-mono);font-size:10px;color:var(--ink-light);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.metric-val{font-family:var(--font-serif);font-size:26px;color:var(--ink)}
+.metric-val.green{color:var(--green)}
+.metric-val.red{color:var(--red)}
+.metric-val.amber{color:var(--amber)}
+/* CHART */
+.chart-card{margin-bottom:20px}
+.chart-wrap{position:relative;width:100%;height:320px}
+.legend{display:flex;gap:20px;margin-bottom:12px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-light);font-family:var(--font-mono)}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.insight{background:#fff;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;font-size:14px;color:var(--ink-light);line-height:1.7}
+.insight strong{color:var(--ink);font-weight:500}
+/* SUBSTACK */
+.sub-bar{background:var(--ink-mid);border-top:1px solid rgba(255,255,255,0.07);margin-top:3rem}
+.sub-inner{max-width:1200px;margin:0 auto;padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.sub-text h3{font-family:var(--font-sans);font-size:15px;font-weight:500;color:var(--cream);margin-bottom:3px}
+.sub-text p{font-size:12px;color:rgba(245,240,232,0.4);font-family:var(--font-mono)}
+.sub-btn{display:flex;align-items:center;gap:9px;background:var(--accent);color:#fff;border:none;border-radius:4px;padding:9px 18px;font-size:12px;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:opacity .15s}
+.sub-btn:hover{opacity:.88}
+.sub-icon{width:14px;height:14px;flex-shrink:0}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .two-col,.metrics{grid-template-columns:1fr}
+  .tax-three-col{grid-template-columns:1fr}
+  .tax-col{padding:16px 0 0;border-right:none;border-top:1px solid var(--border)}
+  .tax-col:first-child{padding-top:0;border-top:none}
+  .page{padding:1rem}
+  .header-top,.api-bar{padding:0 1rem}
+  .api-bar{padding:8px 1rem;flex-wrap:wrap;gap:8px}
+  .api-key-wrap{max-width:100%;flex:1}
+  .brand-sub{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <a class="brand" href="#">
+      <span class="brand-main">How-To <em>Finance</em></span>
+      <span class="brand-sub">Cash Flow Analyzer</span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="lang-group">
+      <button class="lang-btn active" onclick="setLang('zh-TW')">繁中</button>
+      <button class="lang-btn" onclick="setLang('zh-CN')">簡中</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('ja')">日本語</button>
+    </div>
+  </div>
+  <div class="api-bar">
+    <div class="api-key-wrap" id="api-key-wrap">
+      <span class="api-lbl">API KEY</span>
+      <input type="password" class="api-inp" id="api-key-inp" placeholder="sk-ant-api03-..." oninput="onKeyChange(this.value)">
+      <div class="api-dot" id="api-dot"></div>
+    </div>
+    <span class="api-st" id="api-st"></span>
+    <div style="flex:1"></div>
+    <div class="api-hint-right">還沒有 Key？<a href="https://console.anthropic.com" target="_blank" class="api-link">console.anthropic.com</a> 免費申請</div>
+  </div>
+</header>
+
+<main class="page">
+  <div class="page-hdr">
+    <div>
+      <h1 class="page-title" id="t-title">財務盈餘分析儀</h1>
+      <p class="page-sub" id="t-sub">財富不是你賺了多少，而是你留住了多少。</p>
+    </div>
+    <span class="save-bdg" id="save-st"></span>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-lbl" id="t-income">收入</div>
+      <div id="income-cats"></div>
+      <div class="add-cat-row">
+        <input type="text" id="new-income-cat" placeholder="新增收入類別">
+        <button onclick="addCat('income')">＋ 新增</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-lbl" id="t-expense">支出</div>
+      <div id="expense-cats"></div>
+      <div class="add-cat-row">
+        <input type="text" id="new-expense-cat" placeholder="新增支出類別">
+        <button onclick="addCat('expense')">＋ 新增</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card tax-card">
+    <div class="card-lbl">
+      <span id="t-tax">稅務估算</span>
+      <span class="badge badge-amber">2025</span>
+    </div>
+    <div class="tax-three-col">
+      <div class="tax-col">
+        <div class="sec-lbl" id="t-taxsrc">應稅收入來源</div>
+        <div class="tax-check-list" id="tax-checklist"></div>
+      </div>
+      <div class="tax-col">
+        <div class="sec-lbl" id="t-loc">所在地</div>
+        <div class="rg-group">
+          <div class="rg-title" id="t-ca">加拿大</div>
+          <button class="rg-btn" id="rbtn-bc" onclick="selectRegion('bc')"><span class="chk"></span><span class="rg-lbl">BC</span><span class="rg-sub">英屬哥倫比亞</span></button>
+          <button class="rg-btn" id="rbtn-ab" onclick="selectRegion('ab')"><span class="chk"></span><span class="rg-lbl">AB</span><span class="rg-sub">亞伯達</span></button>
+        </div>
+        <div class="rg-group">
+          <div class="rg-title" id="t-as">亞洲</div>
+          <button class="rg-btn" id="rbtn-tw" onclick="selectRegion('tw')"><span class="chk"></span><span class="rg-lbl">台灣</span><span class="rg-sub">TWD</span></button>
+          <button class="rg-btn" id="rbtn-jp" onclick="selectRegion('jp')"><span class="chk"></span><span class="rg-lbl">日本</span><span class="rg-sub">JPY</span></button>
+        </div>
+        <div id="region-result" class="tax-result" style="display:none"></div>
+      </div>
+      <div class="tax-col custom-col">
+        <div class="sec-lbl">
+          自訂稅率規則
+          <span class="badge badge-green">AI</span>
+        </div>
+        <textarea id="custom-ta" rows="5"></textarea>
+        <div class="parse-row">
+          <button id="parse-btn" onclick="applyCustomTax()">套用規則</button>
+          <span class="parse-hint" id="parse-hint"></span>
+        </div>
+        <div id="custom-result" class="tax-result" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-lbl" id="t-mi">總收入</div><div class="metric-val green" id="m-income">—</div></div>
+    <div class="metric"><div class="metric-lbl" id="t-mt">估算稅額</div><div class="metric-val amber" id="m-tax">—</div></div>
+    <div class="metric"><div class="metric-lbl" id="t-me">總支出</div><div class="metric-val red" id="m-expense">—</div></div>
+    <div class="metric"><div class="metric-lbl" id="t-mn">可支配資金</div><div class="metric-val" id="m-net">—</div></div>
+  </div>
+
+  <div class="card chart-card">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1D7A5A"></div><span id="t-li">收入</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#9A6B1A"></div><span id="t-lt">稅</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#C43D2D"></div><span id="t-le">支出</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#534AB7"></div><span id="t-ln">淨現金</span></div>
+    </div>
+    <div class="chart-wrap"><canvas id="wfChart"></canvas></div>
+  </div>
+  <div class="insight" id="insight"></div>
+</main>
+
+<section style="background:var(--cream-dark);border-top:1px solid var(--border);margin-top:3rem">
+  <div style="max-width:1200px;margin:0 auto;padding:2.5rem 2rem">
+    <div style="font-family:var(--font-mono);font-size:10px;color:var(--ink-faint);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">作者的話</div>
+    <div style="width:32px;height:1.5px;background:var(--accent);margin-bottom:16px"></div>
+    <p style="font-family:var(--font-serif);font-size:18px;color:var(--ink);line-height:1.8;max-width:640px;margin-bottom:12px">透過這個網站，我想為你在網路上保存一個，不會因為你更換理財 APP 就消失的理財指南針。</p>
+    <p style="font-size:14px;color:var(--ink-light);line-height:1.8;max-width:640px">人們常說，理財最重要的是持之以恆，那就讓我先為你踏出那一步，持之以恆的為你收納這份我認為很重要的分析。</p>
+  </div>
+</section>
+  <div class="sub-inner">
+    <div class="sub-text">
+      <h3>想知道新功能什麼時候上線？</h3>
+      <p>追蹤我的 Substack，完全免費。有新工具或更新我會第一時間通知你。</p>
+    </div>
+    <a href="https://substack.com/@tcframework" target="_blank" class="sub-btn">
+      <svg class="sub-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+      Subscribe on Substack
+    </a>
+  </div>
+</footer>
+
+<script>
+// placeholder — set once here, nothing else touches it
+document.getElementById('custom-ta').placeholder =
+  '請用外部 AI（如 ChatGPT）查詢你所在地的個人所得稅累進稅率，將結果貼入此欄。\n\n例如：\n第一級：$0 – $55,867，稅率 15%\n第二級：$55,868 – $111,733，稅率 20.5%\n第三級以上...';
+
+// i18n
+const LANGS={
+  'zh-TW':{title:'財務盈餘分析儀',sub:'財富不是你賺了多少，而是你留住了多少。',income:'收入',expense:'支出',taxTitle:'稅務估算',taxSrc:'應稅收入來源',loc:'所在地',ca:'加拿大',as:'亞洲',mI:'總收入',mT:'估算稅額',mE:'總支出',mN:'可支配資金',lI:'收入',lT:'稅',lE:'支出',lN:'淨現金',subItem:'細項',del:'✕',confirm:'確認',subName:'細項名稱',amt:'金額',addCat:'＋ 新增',saving:'儲存中...',saved:'已儲存 ✓',saveErr:'儲存失敗',loaded:'已載入',parseLoad:'AI 解析中…',parseErr:'解析失敗，請重試',iOver:'支出超過收入，差額',iReview:'。建議檢視最大支出類別。',iRate:'儲蓄率：',iAvail:'每年可支配資金',iLife:'，可用於提升生活品質。',iAfter:'稅後淨收入：',x12on:'已×12，點擊取消',x12off:'點擊換算年度（×12）',apiOk:'✓ Key 格式正確',apiErr:'✗ 格式不正確',noKey:'需要 API Key 才能使用'},
+  'zh-CN':{title:'现金流盈余分析仪',sub:'财富不是你赚了多少，而是你留住了多少。',income:'收入',expense:'支出',taxTitle:'税务估算',taxSrc:'应税收入来源',loc:'所在地',ca:'加拿大',as:'亚洲',mI:'总收入',mT:'估算税额',mE:'总支出',mN:'可支配资金',lI:'收入',lT:'税',lE:'支出',lN:'净现金',subItem:'细项',del:'✕',confirm:'确认',subName:'细项名称',amt:'金额',addCat:'＋ 新增',saving:'保存中...',saved:'已保存 ✓',saveErr:'保存失败',loaded:'已载入',parseLoad:'AI 解析中…',parseErr:'解析失败，请重试',iOver:'支出超过收入，差额',iReview:'。建议检视最大支出类别。',iRate:'储蓄率：',iAvail:'每年可支配资金',iLife:'，可用于提升生活品质。',iAfter:'税后净收入：',x12on:'已×12，点击取消',x12off:'点击换算年度（×12）',apiOk:'✓ Key 格式正确',apiErr:'✗ 格式不正确',noKey:'需要 API Key 才能使用'},
+  'en':{title:'Financial Surplus Analyzer',sub:'Wealth is not how much you earn — it\'s how much you keep.',income:'Income',expense:'Expenses',taxTitle:'Tax Estimation',taxSrc:'Taxable income sources',loc:'Location',ca:'Canada',as:'Asia',mI:'Total income',mT:'Est. tax',mE:'Total expenses',mN:'Available funds',lI:'Income',lT:'Tax',lE:'Expenses',lN:'Net cash',subItem:'Sub-item',del:'✕',confirm:'Add',subName:'Item name',amt:'Amount',addCat:'+ Add',saving:'Saving...',saved:'Saved ✓',saveErr:'Save failed',loaded:'Loaded',parseLoad:'AI parsing…',parseErr:'Parse failed, please retry',iOver:'Expenses exceed income by',iReview:'. Review your largest expense categories.',iRate:'Savings rate: ',iAvail:'Annual available:',iLife:' for life upgrades.',iAfter:'After-tax income: ',x12on:'×12 applied, click to remove',x12off:'Click to annualize (×12)',apiOk:'✓ Key format valid',apiErr:'✗ Invalid format',noKey:'API Key required'},
+  'ja':{title:'財務余剰分析',sub:'富とは稼いだ額ではなく、手元に残った額だ。',income:'収入',expense:'支出',taxTitle:'税務試算',taxSrc:'課税対象収入',loc:'所在地',ca:'カナダ',as:'アジア',mI:'総収入',mT:'推定税額',mE:'総支出',mN:'可処分資金',lI:'収入',lT:'税金',lE:'支出',lN:'純現金',subItem:'サブ項目',del:'✕',confirm:'追加',subName:'項目名',amt:'金額',addCat:'＋ 追加',saving:'保存中...',saved:'自動保存 ✓',saveErr:'保存失敗',loaded:'読込完了',parseLoad:'AI解析中…',parseErr:'解析失敗。再試行してください',iOver:'支出が収入を超えています。差額：',iReview:'。最大の支出カテゴリを見直してください。',iRate:'貯蓄率：',iAvail:'年間可処分資金：',iLife:'（生活向上に活用可能）',iAfter:'税引後収入：',x12on:'×12適用中。クリックで解除',x12off:'クリックで年換算（×12）',apiOk:'✓ Key 形式OK',apiErr:'✗ 形式不正',noKey:'APIキーが必要です'}
+};
+let lang='zh-TW',T=LANGS[lang],apiKey='';
+
+function setLang(l){
+  lang=l;T=LANGS[l];
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    const m={'zh-TW':'繁中','zh-CN':'簡中','en':'EN','ja':'日本語'};
+    b.classList.toggle('active',m[l]===b.textContent);
+  });
+  applyT();schedSave();refresh();
+}
+function applyT(){
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  s('t-title',T.title);s('t-sub',T.sub);
+  s('t-income',T.income);s('t-expense',T.expense);
+  s('t-tax',T.taxTitle);s('t-taxsrc',T.taxSrc);s('t-loc',T.loc);
+  s('t-ca',T.ca);s('t-as',T.as);
+  s('t-mi',T.mI);s('t-mt',T.mT);s('t-me',T.mE);s('t-mn',T.mN);
+  s('t-li',T.lI);s('t-lt',T.lT);s('t-le',T.lE);s('t-ln',T.lN);
+  // api status
+  const st=document.getElementById('api-st');
+  if(st)st.textContent=apiKey?(apiKey.startsWith('sk-ant-')?'✓  '+T.apiOk:'✗  '+T.apiErr):'';
+  if(st)st.className='api-st'+(apiKey?(apiKey.startsWith('sk-ant-')?' ok':' err'):'');
+  // custom col enable/disable
+  const btn=document.getElementById('parse-btn');
+  const hint=document.getElementById('parse-hint');
+  const hasKey=!!(apiKey&&apiKey.startsWith('sk-ant-'));
+  if(btn)btn.disabled=!hasKey;
+  if(hint)hint.textContent=hasKey?'':T.noKey;
+}
+function onKeyChange(v){
+  apiKey=v.trim();
+  const w=document.getElementById('api-key-wrap');
+  w.classList.remove('valid','invalid');
+  if(apiKey.startsWith('sk-ant-'))w.classList.add('valid');
+  else if(apiKey.length>0)w.classList.add('invalid');
+  applyT();
+}
+
+// storage
+const SK='htf-v3';
+const DEF={
+  income:[{name:'薪資',amt:80000,items:[]},{name:'副業',amt:5000,items:[]},{name:'投資',amt:2000,items:[]}],
+  expense:[{name:'住房',amt:0,items:[{name:'房租',amt:18000,x12:false}]},{name:'交通',amt:0,items:[{name:'油錢',amt:3600,x12:false},{name:'保險',amt:2400,x12:false}]},{name:'飲食',amt:0,items:[{name:'外食',amt:6000,x12:false},{name:'採買',amt:2000,x12:false}]},{name:'水電',amt:0,items:[{name:'電費',amt:1800,x12:false},{name:'網路',amt:1200,x12:false}]},{name:'其他',amt:0,items:[{name:'娛樂',amt:3000,x12:false},{name:'醫療',amt:2000,x12:false}]}]
+};
+let D,txChk={},selRgn=null,useCustom=false,txAmt=0,chart=null,saveTimer=null;
+
+function loadData(){
+  try{
+    const s=localStorage.getItem(SK);
+    const d=s?JSON.parse(s):null;
+    if(d&&d.income&&d.expense){
+      D=d;txChk=d.taxChecked||{};selRgn=d.selectedRegion||null;
+      if(d.lang){lang=d.lang;T=LANGS[lang];}
+      if(d.customTxt)document.getElementById('custom-ta').value=d.customTxt;
+    }else D=JSON.parse(JSON.stringify(DEF));
+  }catch(e){D=JSON.parse(JSON.stringify(DEF));}
+  applyT();setSt(T.loaded);
+  if(selRgn){document.getElementById('rbtn-'+selRgn).classList.add('active');recompute(false);}
+  refresh();
+}
+function schedSave(){
+  clearTimeout(saveTimer);setSt(T.saving);
+  saveTimer=setTimeout(()=>{
+    try{
+      localStorage.setItem(SK,JSON.stringify({...D,taxChecked:txChk,selectedRegion:selRgn,lang,customTxt:document.getElementById('custom-ta').value}));
+      setSt(T.saved);
+    }catch(e){setSt(T.saveErr);}
+  },600);
+}
+function setSt(m){document.getElementById('save-st').textContent=m;}
+
+// tax engine
+const FB=16129,BCB=12932,ABB=21003,TWD=221000,JPD=480000;
+const FB_R=[[57375,.145],[57375,.205],[63625,.26],[75107,.29],[Infinity,.33]];
+const BC_R=[[45654,.0506],[45654,.077],[13525,.105],[22464,.1229],[22464,.147],[89124,.168],[Infinity,.205]];
+const AB_R=[[60000,.08],[91234,.10],[65277,.12],[91036,.13],[Infinity,.15]];
+const TW_R=[[590000,.05],[740000,.12],[1330000,.20],[2320000,.30],[Infinity,.40]];
+const JP_R=[[1950000,.05],[1950000,.10],[1950000,.20],[4000000,.23],[3500000,.33],[5000000,.40],[Infinity,.45]];
+const RINFO={bc:{name:'BC, Canada',cur:'CAD',note:'Federal(14.5%+)+BC(5.06%+), BPA $16,129/$12,932'},ab:{name:'Alberta',cur:'CAD',note:'Federal(14.5%+)+AB(8% first $60k), BPA $16,129/$21,003'},tw:{name:'台灣',cur:'TWD',note:'綜所稅5–40%，已扣免稅額約$221,000'},jp:{name:'日本',cur:'JPY',note:'所得稅5–45%(×1.021)+住民稅10%，基礎控除¥480,000'}};
+function brk(v,b){let t=0,r=v;for(const[l,rt]of b){if(r<=0)break;const c=Math.min(r,l);t+=c*rt;r-=c;}return t;}
+function calcTax(g,c){
+  if(g<=0)return 0;
+  if(c==='bc')return Math.round(brk(Math.max(0,g-FB),FB_R)+brk(Math.max(0,g-BCB),BC_R));
+  if(c==='ab')return Math.round(brk(Math.max(0,g-FB),FB_R)+brk(Math.max(0,g-ABB),AB_R));
+  if(c==='tw')return Math.round(brk(Math.max(0,g-TWD),TW_R));
+  if(c==='jp'){const t=Math.max(0,g-JPD);const n=brk(t,JP_R);return Math.round(n+n*.021+t*.10);}
+  return 0;
+}
+const fmt=n=>'$'+Math.round(Math.abs(n)).toLocaleString();
+const iAmt=i=>i.x12?i.amt*12:i.amt;
+const catTot=c=>(c.items&&c.items.length>0)?c.items.reduce((s,i)=>s+iAmt(i),0):(c.amt||0);
+const txIncome=()=>D.income.filter(c=>txChk[c.name]!==false).reduce((s,c)=>s+catTot(c),0);
+
+async function applyCustomTax(){
+  const text=document.getElementById('custom-ta').value.trim();if(!text)return;
+  const inc=txIncome();
+  const box=document.getElementById('custom-result');box.style.display='block';
+  box.innerHTML=`<em style="color:var(--ink-faint)">${T.parseLoad}</em>`;
+  const prompt=`Extract progressive tax brackets from the text below. Return ONLY a JSON array of [upperLimit, rate] pairs (use 1e15 for infinity). No markdown, no explanation.\n\n${text}\n\nExample: [[55000,0.15],[120000,0.205],[1e15,0.26]]`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,messages:[{role:'user',content:prompt}]})});
+    const d=await res.json();
+    if(d.error){box.innerHTML=`<span style="color:var(--red)">${T.parseErr}: ${d.error.message}</span>`;return;}
+    const raw=d.content?.find(b=>b.type==='text')?.text||'';
+    const m=raw.match(/\[[\s\S]*\]/);if(!m){box.innerHTML=`<span style="color:var(--red)">${T.parseErr}</span>`;return;}
+    const p=JSON.parse(m[0]);
+    const bs=[];let prev=0;
+    for(const[lim,rate]of p){const rl=lim>=1e14?Infinity:lim;bs.push([rl===Infinity?Infinity:rl-prev,rate]);prev=rl===Infinity?prev:rl;}
+    if(bs.length&&bs[bs.length-1][0]!==Infinity)bs[bs.length-1][0]=Infinity;
+    const tax=Math.round(brk(inc,bs));const rate=inc>0?((tax/inc)*100).toFixed(1):0;
+    useCustom=true;
+    if(selRgn){document.getElementById('rbtn-'+selRgn).classList.remove('active');selRgn=null;document.getElementById('region-result').style.display='none';}
+    txAmt=tax;schedSave();
+    const desc=p.map(([l,r])=>`${l>=1e14?'∞':fmt(l)} @ ${(r*100).toFixed(1)}%`).join(' · ');
+    box.innerHTML=`<strong>AI — ${rate}%</strong> · ${T.mT} <strong style="color:var(--amber)">${fmt(tax)}</strong><br><span style="font-size:11px;color:var(--ink-faint);font-family:var(--font-mono)">${desc}</span>`;
+    renderMetrics();renderChart();
+  }catch(e){box.innerHTML=`<span style="color:var(--red)">${T.parseErr}: ${e.message}</span>`;}
+}
+
+function renderCats(type){
+  const el=document.getElementById(type+'-cats');el.innerHTML='';
+  D[type].forEach((cat,ci)=>{
+    const hasI=cat.items&&cat.items.length>0;
+    const blk=document.createElement('div');blk.className='cat-block';
+    const row=document.createElement('div');row.className='cat-row';
+    const nf=document.createElement('input');nf.type='text';nf.className='cat-name-inp';nf.value=cat.name;
+    nf.onblur=e=>{const v=e.target.value.trim();if(!v){e.target.value=cat.name;return;}D[type][ci].name=v;schedSave();renderTaxCh();renderMetrics();};
+    nf.onkeydown=e=>{if(e.key==='Enter')e.target.blur();};
+    let ae;
+    if(hasI){ae=document.createElement('span');ae.className='cat-amt-disp '+type;ae.textContent=fmt(catTot(cat));}
+    else{ae=document.createElement('input');ae.type='number';ae.className='cat-amt-inp '+type;ae.value=cat.amt||0;ae.min=0;ae.step='any';
+      ae.onblur=e=>{const v=parseFloat(e.target.value);if(isNaN(v)||v<0){e.target.value=D[type][ci].amt||0;return;}D[type][ci].amt=v;schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else refresh();};
+      ae.onkeydown=e=>{if(e.key==='Enter')e.target.blur();};}
+    const acts=document.createElement('div');acts.className='cat-acts';
+    const ab=document.createElement('button');ab.className='aBtn';ab.textContent=T.subItem+' ＋';
+    ab.onclick=()=>{const ar=blk.querySelector('.add-sub-row');if(ar){ar.style.display=ar.style.display==='flex'?'none':'flex';if(ar.style.display==='flex')ar.querySelector('input[type=text]').focus();}};
+    const db=document.createElement('button');db.className='aBtn del';db.textContent=T.del;
+    db.onclick=()=>{D[type].splice(ci,1);schedSave();refresh();};
+    acts.appendChild(ab);acts.appendChild(db);
+    row.appendChild(nf);row.appendChild(ae);row.appendChild(acts);blk.appendChild(row);
+    if(hasI){
+      const sl=document.createElement('div');sl.className='sub-list';
+      cat.items.forEach((item,ii)=>{
+        const sr=document.createElement('div');sr.className='sub-row';
+        const sn=document.createElement('input');sn.type='text';sn.className='sub-name-inp';sn.value=item.name;
+        sn.onblur=e=>{const v=e.target.value.trim();if(!v){e.target.value=item.name;return;}D[type][ci].items[ii].name=v;schedSave();};
+        sn.onkeydown=e=>{if(e.key==='Enter')e.target.blur();if(e.key==='Tab'){e.preventDefault();sr.querySelector('.sub-amt-inp').focus();}};
+        const sa=document.createElement('input');sa.type='number';sa.className='sub-amt-inp';sa.value=item.amt;sa.min=0;sa.step='any';
+        sa.onblur=e=>{const v=parseFloat(e.target.value);if(isNaN(v)||v<0){e.target.value=item.amt;return;}D[type][ci].items[ii].amt=v;schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else refresh();};
+        sa.onkeydown=e=>{if(e.key==='Enter')e.target.blur();};
+        const xl=document.createElement('span');xl.className='sub-x12-lbl';xl.textContent=item.x12?`= ${fmt(iAmt(item))}`:'';
+        const sacts=document.createElement('div');sacts.className='sub-acts';
+        const xb=document.createElement('button');xb.className='sBtn'+(item.x12?' x12on':'');xb.textContent='×12';xb.title=item.x12?T.x12on:T.x12off;
+        xb.onclick=()=>{D[type][ci].items[ii].x12=!D[type][ci].items[ii].x12;schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else refresh();};
+        const xd=document.createElement('button');xd.className='sBtn del';xd.textContent=T.del;
+        xd.onclick=()=>{D[type][ci].items.splice(ii,1);if(D[type][ci].items.length===0)D[type][ci].amt=0;schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else refresh();};
+        sacts.appendChild(xb);sacts.appendChild(xd);
+        sr.appendChild(sn);sr.appendChild(sa);sr.appendChild(xl);sr.appendChild(sacts);sl.appendChild(sr);
+      });
+      blk.appendChild(sl);
+    }
+    const ar=document.createElement('div');ar.className='add-sub-row';
+    const ni=document.createElement('input');ni.type='text';ni.placeholder=T.subName;
+    const ai=document.createElement('input');ai.type='number';ai.placeholder=T.amt;ai.min=0;ai.step='any';
+    const ac=document.createElement('button');ac.textContent=T.confirm;
+    const doAdd=()=>{const name=ni.value.trim();const amt=parseFloat(ai.value);if(!name||isNaN(amt)||amt<0)return;if(!D[type][ci].items)D[type][ci].items=[];D[type][ci].items.push({name,amt,x12:false});ni.value='';ai.value='';schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else refresh();};
+    ni.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();ai.focus();}if(e.key==='Escape')ar.style.display='none';};
+    ai.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();doAdd();}if(e.key==='Escape')ar.style.display='none';};
+    ac.onclick=doAdd;
+    ar.appendChild(ni);ar.appendChild(ai);ar.appendChild(ac);blk.appendChild(ar);el.appendChild(blk);
+  });
+  if(type==='income')renderTaxCh();
+}
+
+function renderTaxCh(){
+  const el=document.getElementById('tax-checklist');el.innerHTML='';
+  D.income.forEach((cat,ci)=>{
+    if(txChk[cat.name]===undefined)txChk[cat.name]=true;
+    const row=document.createElement('div');row.className='tax-check-row';
+    row.innerHTML=`<input type="checkbox" id="tc-${ci}" ${txChk[cat.name]?'checked':''}><label for="tc-${ci}" class="tcn">${cat.name}</label><span class="tca">${fmt(catTot(cat))}</span>`;
+    row.querySelector('input').onchange=e=>{txChk[cat.name]=e.target.checked;schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else renderMetrics();};
+    el.appendChild(row);
+  });
+}
+function addCat(type){const inp=document.getElementById('new-'+type+'-cat');const name=inp.value.trim();if(!name)return;D[type].push({name,amt:0,items:[]});inp.value='';schedSave();refresh();}
+function selectRegion(code){
+  if(selRgn===code){selRgn=null;txAmt=0;document.getElementById('rbtn-'+code).classList.remove('active');document.getElementById('region-result').style.display='none';schedSave();renderMetrics();renderChart();return;}
+  if(selRgn)document.getElementById('rbtn-'+selRgn).classList.remove('active');
+  selRgn=code;useCustom=false;document.getElementById('rbtn-'+code).classList.add('active');document.getElementById('custom-result').style.display='none';schedSave();recompute();
+}
+function recompute(doR=true){
+  if(!selRgn)return;
+  const inc=txIncome();const tax=calcTax(inc,selRgn);const info=RINFO[selRgn];const rate=inc>0?((tax/inc)*100).toFixed(1):0;
+  txAmt=tax;const box=document.getElementById('region-result');box.style.display='block';
+  box.innerHTML=`<strong>${info.name} — ${rate}%</strong> · ${T.mT} <strong style="color:var(--amber)">${fmt(tax)}</strong> (${info.cur})<br><span style="font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)">${info.note}</span>`;
+  if(doR){renderMetrics();renderChart();}
+}
+function renderMetrics(){
+  const ti=D.income.reduce((s,c)=>s+catTot(c),0);
+  const te=D.expense.reduce((s,c)=>s+catTot(c),0);
+  const net=ti-txAmt-te;
+  document.getElementById('m-income').textContent=fmt(ti);
+  document.getElementById('m-tax').textContent=txAmt>0?fmt(txAmt):'—';
+  document.getElementById('m-expense').textContent=fmt(te);
+  const mn=document.getElementById('m-net');mn.textContent=fmt(net);mn.className='metric-val'+(net>=0?' green':' red');
+
+  const ins=document.getElementById('insight');
+  if(net<=0){
+    ins.innerHTML=`<strong style="color:var(--red)">支出超過收入，差額 ${fmt(-net)}</strong><br><span style="font-size:13px;color:var(--ink-light)">目前沒有盈餘可分配。建議優先檢視最大支出項目，創造正向現金流。</span>`;
+    return;
+  }
+
+  const improve = Math.round(net*0.4);
+  const reward  = Math.round(net*0.3);
+  const save    = Math.round(net*0.3);
+
+  // 10-year compound: save * ((1.08^10 - 1) / 0.08) * 0.08 = save * 14.487 * 0.08
+  const passiveAnnual = Math.round(save * 14.487 * 0.08);
+  const passiveMonths = (passiveAnnual / (net/12)).toFixed(1);
+
+  ins.innerHTML=`
+    <div style="font-size:20px;font-family:var(--font-serif);color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">作者建議將您的盈餘如此分配</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px">
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">結構改善生活 40%</div>
+        <div style="font-size:20px;font-family:var(--font-serif);color:var(--ink)">${fmt(improve)}</div>
+        <div style="font-size:12px;color:var(--ink-light);margin-top:3px">升級居住、健康、學習</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">犒勞自己 30%</div>
+        <div style="font-size:20px;font-family:var(--font-serif);color:var(--ink)">${fmt(reward)}</div>
+        <div style="font-size:12px;color:var(--ink-light);margin-top:3px">旅行、美食、享樂</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">儲蓄投資 30%</div>
+        <div style="font-size:20px;font-family:var(--font-serif);color:var(--ink)">${fmt(save)}</div>
+        <div style="font-size:12px;color:var(--ink-light);margin-top:3px">每年存入，複利滾動</div>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:12px;font-size:13px;color:var(--ink-light);line-height:1.8">
+      若每年將盈餘的 30%（<strong style="color:var(--ink)">${fmt(save)}</strong>）持續投資，以年化 8% 複利計算，
+      <strong>10 年後每年將產生約 ${fmt(passiveAnnual)} 的被動收入</strong>，
+      相當於你現在 <strong style="color:var(--green)">${passiveMonths} 個月的盈餘</strong>。
+      盈餘越大，複利的力量越驚人。
+    </div>`;
+}
+function renderChart(){
+  const labels=[],floats=[],bars=[],colors=[],tips=[];let r=0;
+  D.income.forEach(c=>{const t=catTot(c);labels.push(c.name);floats.push(r);bars.push(t);colors.push('#1D7A5A');tips.push([fmt(t),...(c.items&&c.items.length?c.items.map(i=>`${i.name}: ${fmt(iAmt(i))}${i.x12?' (×12)':''}`):[])]);r+=t;});
+  if(txAmt>0){labels.push(T.lT);floats.push(r-txAmt);bars.push(txAmt);colors.push('#9A6B1A');tips.push(['-'+fmt(txAmt),T.mT]);r-=txAmt;}
+  D.expense.forEach(c=>{const t=catTot(c);labels.push(c.name);floats.push(r-t);bars.push(t);colors.push('#C43D2D');tips.push(['-'+fmt(t),...(c.items&&c.items.length?c.items.map(i=>`${i.name}: ${fmt(iAmt(i))}${i.x12?' (×12)':''}`):[])]);r-=t;});
+  labels.push(T.lN);floats.push(0);bars.push(Math.max(0,r));colors.push('#534AB7');tips.push([fmt(r),T.mN]);
+  if(chart)chart.destroy();
+  chart=new Chart(document.getElementById('wfChart'),{
+    type:'bar',
+    data:{labels,datasets:[{label:'f',data:floats,backgroundColor:'transparent',borderColor:'transparent',stack:'s'},{label:'v',data:bars,backgroundColor:colors,borderRadius:5,stack:'s'}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{
+        title(c){if(!c||!c.length)return'';const i=c[0].dataIndex;return tips[i]?tips[i][0]:'';},
+        label(c){if(!c||c.dataset.label==='f')return null;return tips[c.dataIndex]?tips[c.dataIndex].slice(1):null;},
+        afterLabel(){return null;}},
+        filter:i=>i&&i.dataset&&i.dataset.label!=='f',
+        displayColors:false,backgroundColor:'#1A1814',titleColor:'#F5F0E8',bodyColor:'rgba(245,240,232,.7)',padding:10,cornerRadius:6}},
+      scales:{
+        x:{stacked:true,grid:{display:false},border:{display:false},ticks:{autoSkip:false,maxRotation:30,font:{size:11,family:"'DM Mono',monospace"},color:'#7A7468'}},
+        y:{stacked:true,grid:{color:'rgba(26,24,20,.06)'},border:{display:false},ticks:{callback:v=>'$'+(v/1000).toFixed(0)+'k',font:{size:11,family:"'DM Mono',monospace"},color:'#7A7468'}}
+      }
+    }
+  });
+}
+function refresh(){renderCats('income');renderCats('expense');renderMetrics();renderChart();}
+loadData();
+</script>
+</body>
+</html>
