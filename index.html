@@ -68,7 +68,7 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 .save-bdg{font-size:11px;font-family:var(--font-mono);color:var(--ink-faint);flex-shrink:0}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
 /* CARDS */
-.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow-sm)}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;box-shadow:var(--shadow-sm);margin-bottom:20px}
 .card-lbl{font-family:var(--font-sans);font-size:15px;font-weight:500;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .badge{display:inline-flex;align-items:center;font-size:10px;font-family:var(--font-mono);padding:2px 7px;border-radius:3px;letter-spacing:.05em;text-transform:uppercase}
 .badge-amber{background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
@@ -77,6 +77,7 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 .cat-block{margin-bottom:5px}
 .cat-row{display:flex;align-items:center;padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border);background:var(--cream);transition:border-color .15s}
 .cat-row:hover{border-color:var(--border-strong)}
+.cat-fixed-chk{width:14px;height:14px;margin-right:8px;cursor:pointer;accent-color:var(--red);flex-shrink:0}
 .cat-name-inp{flex:6;font-size:14px;font-weight:500;color:var(--ink);background:transparent;border:none;outline:none;padding:1px 4px;border-radius:3px;min-width:0}
 .cat-name-inp:focus{background:rgba(255,255,255,.7)}
 .cat-amt-inp{flex:4;font-size:14px;font-weight:500;background:transparent;border:none;outline:none;text-align:right;padding:1px 6px;min-width:0}
@@ -104,6 +105,8 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 .sBtn:hover{background:var(--ink-mid);color:#fff;border-color:var(--ink-mid)}
 .sBtn.x12on{background:#EEF2FF;border-color:#A5B4FC;color:#4338CA}
 .sBtn.x12on:hover{background:#4338CA;color:#fff;border-color:#4338CA}
+.sBtn.taxon{background:#FFF1F2;border-color:#FECDD3;color:#E11D48}
+.sBtn.taxon:hover{background:#E11D48;color:#fff;border-color:#E11D48}
 .sBtn.del:hover{background:transparent;border-color:var(--red);color:var(--red)}
 .add-sub-row{display:none;align-items:center;gap:6px;margin:3px 0 3px 16px;padding:5px 8px;border-radius:var(--radius);border:1px dashed var(--border-strong)}
 .add-sub-row input[type=text]{flex:6;font-size:13px;height:28px;padding:0 7px;min-width:0;border-radius:4px;border:1px solid var(--border);background:var(--cream-dark);color:var(--ink);outline:none}
@@ -117,7 +120,6 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 .add-cat-row button{flex-shrink:0;font-size:13px;padding:0 12px;height:32px;border-radius:var(--radius);border:1px solid var(--border-strong);background:#fff;color:var(--ink-mid);transition:all .15s}
 .add-cat-row button:hover{background:var(--ink);color:var(--cream);border-color:var(--ink)}
 /* TAX */
-.tax-card{margin-bottom:20px}
 .tax-three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0}
 .tax-col{padding:0 24px;border-right:1px solid var(--border)}
 .tax-col:first-child{padding-left:0}
@@ -151,6 +153,23 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 #parse-btn:hover{opacity:.88}
 #parse-btn:disabled{opacity:.35;cursor:not-allowed}
 .parse-hint{font-size:11px;color:var(--ink-faint);font-family:var(--font-mono)}
+
+/* BUDGET CARD */
+.budget-grid { display: grid; grid-template-columns: 1.2fr 1.6fr 1fr; gap: 0; }
+.budget-sec { padding: 0 24px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
+.budget-sec:first-child { padding-left: 0; }
+.budget-sec:last-child { padding-right: 0; border-right: none; justify-content: center; align-items: center; text-align: center; }
+.b-title { font-size: 12px; font-weight: 500; color: var(--ink-mid); padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; font-family: var(--font-mono); letter-spacing: .05em; }
+.b-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+.b-row .b-lbl { color: var(--ink-light); }
+.b-row .b-val { font-weight: 500; font-family: var(--font-mono); color: var(--ink-mid); }
+.b-inp-wrap { display: flex; align-items: center; gap: 4px; }
+.b-inp { width: 56px; text-align: right; padding: 3px 6px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-family: var(--font-mono); background: var(--cream-dark); color: var(--ink); outline: none; transition: border-color .15s; }
+.b-inp:focus { border-color: var(--border-strong); background: #fff; }
+.b-big-val { font-size: 26px; font-weight: 400; font-family: var(--font-serif); margin-top: 8px; }
+.b-res.green { color: var(--green); }
+.b-res.red { color: var(--red); }
+
 /* METRICS */
 .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .metric{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;box-shadow:var(--shadow-sm)}
@@ -160,7 +179,6 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 .metric-val.red{color:var(--red)}
 .metric-val.amber{color:var(--amber)}
 /* CHART */
-.chart-card{margin-bottom:20px}
 .chart-wrap{position:relative;width:100%;height:320px}
 .legend{display:flex;gap:20px;margin-bottom:12px;flex-wrap:wrap}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-light);font-family:var(--font-mono)}
@@ -178,9 +196,9 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 /* RESPONSIVE */
 @media(max-width:768px){
   .two-col,.metrics{grid-template-columns:1fr}
-  .tax-three-col{grid-template-columns:1fr}
-  .tax-col{padding:16px 0 0;border-right:none;border-top:1px solid var(--border)}
-  .tax-col:first-child{padding-top:0;border-top:none}
+  .tax-three-col, .budget-grid{grid-template-columns:1fr}
+  .tax-col, .budget-sec{padding:16px 0 0;border-right:none;border-top:1px solid var(--border)}
+  .tax-col:first-child, .budget-sec:first-child{padding-top:0;border-top:none}
   .page{padding:1rem}
   .header-top,.api-bar{padding:0 1rem}
   .api-bar{padding:8px 1rem;flex-wrap:wrap;gap:8px}
@@ -245,7 +263,37 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
     </div>
   </div>
 
-  <div class="card tax-card">
+  <div class="card" id="budget-card">
+    <div class="card-lbl" id="t-budget-title">每月預算規劃 (Monthly Budget)</div>
+    <div class="budget-grid">
+      <div class="budget-sec">
+        <div class="b-title" id="t-budget-sec1">1. 預算設定</div>
+        <div class="b-row"><span class="b-lbl" id="t-budget-aftertax">總稅後收入 / 12</span><span class="b-val" id="b-aftertax"></span></div>
+        <div class="b-row"><span class="b-lbl" id="t-budget-fixed">固定開支 / 12</span><span class="b-val" id="b-fixed"></span></div>
+        <div class="b-row"><span class="b-lbl" id="t-budget-remain">每月可用資金</span><span class="b-val" id="b-remain"></span></div>
+        <div class="b-row" style="margin-top:8px">
+          <span class="b-lbl" id="t-budget-pct">提撥為消費預算</span>
+          <div class="b-inp-wrap">
+            <input type="number" id="b-pct-inp" class="b-inp" min="0" max="100" step="5"> %
+          </div>
+        </div>
+        <div class="b-row" style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--border)">
+          <strong class="b-lbl" style="color:var(--ink)" id="t-budget-target">非固定開支總目標</strong>
+          <strong class="b-val" id="b-target" style="color:var(--accent)"></strong>
+        </div>
+      </div>
+      <div class="budget-sec">
+        <div class="b-title" id="t-budget-sec2">2. 非固定開支分配</div>
+        <div id="b-var-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+      <div class="budget-sec">
+        <div class="b-title" style="border:none; padding:0; margin-bottom:8px;" id="b-result-lbl">結餘 / 超支</div>
+        <div id="b-result" class="b-big-val"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-lbl">
       <span id="t-tax">稅務估算</span>
       <span class="badge badge-amber">2025</span>
@@ -291,11 +339,12 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
     <div class="metric"><div class="metric-lbl" id="t-mn">可支配資金</div><div class="metric-val" id="m-net">—</div></div>
   </div>
 
-  <div class="card chart-card">
+  <div class="card">
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:#1D7A5A"></div><span id="t-li">收入</span></div>
       <div class="legend-item"><div class="legend-dot" style="background:#9A6B1A"></div><span id="t-lt">稅</span></div>
       <div class="legend-item"><div class="legend-dot" style="background:#C43D2D"></div><span id="t-le">支出</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#7F1D1D"></div><span id="t-lf">固定支出</span></div>
       <div class="legend-item"><div class="legend-dot" style="background:#534AB7"></div><span id="t-ln">淨現金</span></div>
     </div>
     <div class="chart-wrap"><canvas id="wfChart"></canvas></div>
@@ -325,16 +374,24 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 </footer>
 
 <script>
-// placeholder — set once here, nothing else touches it
+// placeholder
 document.getElementById('custom-ta').placeholder =
   '請用外部 AI（如 ChatGPT）查詢你所在地的個人所得稅累進稅率，將結果貼入此欄。\n\n例如：\n第一級：$0 – $55,867，稅率 15%\n第二級：$55,868 – $111,733，稅率 20.5%\n第三級以上...';
 
 // i18n
 const LANGS={
-  'zh-TW':{title:'財務盈餘分析儀',sub:'財富不是你賺了多少，而是你留住了多少。',income:'收入',expense:'支出',taxTitle:'稅務估算',taxSrc:'應稅收入來源',loc:'所在地',ca:'加拿大',as:'亞洲',mI:'總收入',mT:'估算稅額',mE:'總支出',mN:'可支配資金',lI:'收入',lT:'稅',lE:'支出',lN:'淨現金',subItem:'細項',del:'✕',confirm:'確認',subName:'細項名稱',amt:'金額',addCat:'＋ 新增',saving:'儲存中...',saved:'已儲存 ✓',saveErr:'儲存失敗',loaded:'已載入',parseLoad:'AI 解析中…',parseErr:'解析失敗，請重試',iOver:'支出超過收入，差額',iReview:'。建議檢視最大支出類別。',iRate:'儲蓄率：',iAvail:'每年可支配資金',iLife:'，可用於提升生活品質。',iAfter:'稅後淨收入：',x12on:'已×12，點擊取消',x12off:'點擊換算年度（×12）',apiOk:'✓ Key 格式正確',apiErr:'✗ 格式不正確',noKey:'需要 API Key 才能使用'},
-  'zh-CN':{title:'现金流盈余分析仪',sub:'财富不是你赚了多少，而是你留住了多少。',income:'收入',expense:'支出',taxTitle:'税务估算',taxSrc:'应税收入来源',loc:'所在地',ca:'加拿大',as:'亚洲',mI:'总收入',mT:'估算税额',mE:'总支出',mN:'可支配资金',lI:'收入',lT:'税',lE:'支出',lN:'净现金',subItem:'细项',del:'✕',confirm:'确认',subName:'细项名称',amt:'金额',addCat:'＋ 新增',saving:'保存中...',saved:'已保存 ✓',saveErr:'保存失败',loaded:'已载入',parseLoad:'AI 解析中…',parseErr:'解析失败，请重试',iOver:'支出超过收入，差额',iReview:'。建议检视最大支出类别。',iRate:'储蓄率：',iAvail:'每年可支配资金',iLife:'，可用于提升生活品质。',iAfter:'税后净收入：',x12on:'已×12，点击取消',x12off:'点击换算年度（×12）',apiOk:'✓ Key 格式正确',apiErr:'✗ 格式不正确',noKey:'需要 API Key 才能使用'},
-  'en':{title:'Financial Surplus Analyzer',sub:'Wealth is not how much you earn — it\'s how much you keep.',income:'Income',expense:'Expenses',taxTitle:'Tax Estimation',taxSrc:'Taxable income sources',loc:'Location',ca:'Canada',as:'Asia',mI:'Total income',mT:'Est. tax',mE:'Total expenses',mN:'Available funds',lI:'Income',lT:'Tax',lE:'Expenses',lN:'Net cash',subItem:'Sub-item',del:'✕',confirm:'Add',subName:'Item name',amt:'Amount',addCat:'+ Add',saving:'Saving...',saved:'Saved ✓',saveErr:'Save failed',loaded:'Loaded',parseLoad:'AI parsing…',parseErr:'Parse failed, please retry',iOver:'Expenses exceed income by',iReview:'. Review your largest expense categories.',iRate:'Savings rate: ',iAvail:'Annual available:',iLife:' for life upgrades.',iAfter:'After-tax income: ',x12on:'×12 applied, click to remove',x12off:'Click to annualize (×12)',apiOk:'✓ Key format valid',apiErr:'✗ Invalid format',noKey:'API Key required'},
-  'ja':{title:'財務余剰分析',sub:'富とは稼いだ額ではなく、手元に残った額だ。',income:'収入',expense:'支出',taxTitle:'税務試算',taxSrc:'課税対象収入',loc:'所在地',ca:'カナダ',as:'アジア',mI:'総収入',mT:'推定税額',mE:'総支出',mN:'可処分資金',lI:'収入',lT:'税金',lE:'支出',lN:'純現金',subItem:'サブ項目',del:'✕',confirm:'追加',subName:'項目名',amt:'金額',addCat:'＋ 追加',saving:'保存中...',saved:'自動保存 ✓',saveErr:'保存失敗',loaded:'読込完了',parseLoad:'AI解析中…',parseErr:'解析失敗。再試行してください',iOver:'支出が収入を超えています。差額：',iReview:'。最大の支出カテゴリを見直してください。',iRate:'貯蓄率：',iAvail:'年間可処分資金：',iLife:'（生活向上に活用可能）',iAfter:'税引後収入：',x12on:'×12適用中。クリックで解除',x12off:'クリックで年換算（×12）',apiOk:'✓ Key 形式OK',apiErr:'✗ 形式不正',noKey:'APIキーが必要です'}
+  'zh-TW':{title:'財務盈餘分析儀',sub:'財富不是你賺了多少，而是你留住了多少。',income:'收入',expense:'支出',taxTitle:'稅務估算',taxSrc:'應稅收入來源',loc:'所在地',ca:'加拿大',as:'亞洲',mI:'總收入',mT:'估算稅額',mE:'總支出',mN:'可支配資金',lI:'收入',lT:'稅',lE:'支出',lf:'固定支出',lN:'淨現金',subItem:'細項',del:'✕',confirm:'確認',subName:'細項名稱',amt:'金額',addCat:'＋ 新增',saving:'儲存中...',saved:'已儲存 ✓',saveErr:'儲存失敗',loaded:'已載入',parseLoad:'AI 解析中…',parseErr:'解析失敗，請重試',iOver:'支出超過收入，差額',iReview:'。建議檢視最大支出類別。',iRate:'儲蓄率：',iAvail:'每年可支配資金',iLife:'，可用於提升生活品質。',iAfter:'稅後淨收入：',x12on:'已×12，點擊取消',x12off:'點擊換算年度（×12）',apiOk:'✓ Key 格式正確',apiErr:'✗ 格式不正確',noKey:'需要 API Key 才能使用',
+    bTitle:'每月預算規劃 (Monthly Budget)', bSec1:'1. 預算設定', bSec2:'2. 非固定開支分配', bAfterTax:'總稅後收入 / 12', bFixed:'固定開支 / 12', bRemain:'每月可用資金', bPct:'提撥為消費預算', bTarget:'非固定開支總目標', bSaved:'結餘 (Saved)', bOver:'超支 (Over Budget)'
+  },
+  'zh-CN':{title:'现金流盈余分析仪',sub:'财富不是你赚了多少，而是你留住了多少。',income:'收入',expense:'支出',taxTitle:'税务估算',taxSrc:'应税收入来源',loc:'所在地',ca:'加拿大',as:'亚洲',mI:'总收入',mT:'估算税额',mE:'总支出',mN:'可支配资金',lI:'收入',lT:'税',lE:'支出',lf:'固定支出',lN:'净现金',subItem:'细项',del:'✕',confirm:'确认',subName:'细项名称',amt:'金额',addCat:'＋ 新增',saving:'保存中...',saved:'已保存 ✓',saveErr:'保存失败',loaded:'已载入',parseLoad:'AI 解析中…',parseErr:'解析失败，请重试',iOver:'支出超过收入，差额',iReview:'。建议检视最大支出类别。',iRate:'储蓄率：',iAvail:'每年可支配资金',iLife:'，可用于提升生活品质。',iAfter:'税后净收入：',x12on:'已×12，点击取消',x12off:'点击换算年度（×12）',apiOk:'✓ Key 格式正确',apiErr:'✗ 格式不正确',noKey:'需要 API Key 才能使用',
+    bTitle:'每月预算规划 (Monthly Budget)', bSec1:'1. 预算设定', bSec2:'2. 非固定开支分配', bAfterTax:'总税后收入 / 12', bFixed:'固定开支 / 12', bRemain:'每月可用资金', bPct:'提拨为消费预算', bTarget:'非固定开支总目标', bSaved:'结余 (Saved)', bOver:'超支 (Over Budget)'
+  },
+  'en':{title:'Financial Surplus Analyzer',sub:'Wealth is not how much you earn — it\'s how much you keep.',income:'Income',expense:'Expenses',taxTitle:'Tax Estimation',taxSrc:'Taxable income sources',loc:'Location',ca:'Canada',as:'Asia',mI:'Total income',mT:'Est. tax',mE:'Total expenses',mN:'Available funds',lI:'Income',lT:'Tax',lE:'Expenses',lf:'Fixed Expenses',lN:'Net cash',subItem:'Sub-item',del:'✕',confirm:'Add',subName:'Item name',amt:'Amount',addCat:'+ Add',saving:'Saving...',saved:'Saved ✓',saveErr:'Save failed',loaded:'Loaded',parseLoad:'AI parsing…',parseErr:'Parse failed, please retry',iOver:'Expenses exceed income by',iReview:'. Review your largest expense categories.',iRate:'Savings rate: ',iAvail:'Annual available:',iLife:' for life upgrades.',iAfter:'After-tax income: ',x12on:'×12 applied, click to remove',x12off:'Click to annualize (×12)',apiOk:'✓ Key format valid',apiErr:'✗ Invalid format',noKey:'API Key required',
+    bTitle:'Monthly Budget Planner', bSec1:'1. Budget Setup', bSec2:'2. Variable Allocations', bAfterTax:'After-Tax Income / 12', bFixed:'Fixed Expenses / 12', bRemain:'Available / Month', bPct:'Allocate to Variable %', bTarget:'Target Variable Budget', bSaved:'Saved', bOver:'Over Budget'
+  },
+  'ja':{title:'財務余剰分析',sub:'富とは稼いだ額ではなく、手元に残った額だ。',income:'収入',expense:'支出',taxTitle:'税務試算',taxSrc:'課税対象収入',loc:'所在地',ca:'カナダ',as:'アジア',mI:'総収入',mT:'推定税額',mE:'総支出',mN:'可処分資金',lI:'収入',lT:'税金',lE:'支出',lf:'固定支出',lN:'純現金',subItem:'サブ項目',del:'✕',confirm:'追加',subName:'項目名',amt:'金額',addCat:'＋ 追加',saving:'保存中...',saved:'自動保存 ✓',saveErr:'保存失敗',loaded:'読込完了',parseLoad:'AI解析中…',parseErr:'解析失敗。再試行してください',iOver:'支出が収入を超えています。差額：',iReview:'。最大の支出カテゴリを見直してください。',iRate:'貯蓄率：',iAvail:'年間可処分資金：',iLife:'（生活向上に活用可能）',iAfter:'税引後収入：',x12on:'×12適用中。クリックで解除',x12off:'クリックで年換算（×12）',apiOk:'✓ Key 形式OK',apiErr:'✗ 形式不正',noKey:'APIキーが必要です',
+    bTitle:'月次予算プランナー', bSec1:'1. 予算設定', bSec2:'2. 変動費の割当', bAfterTax:'税引後収入 / 12', bFixed:'固定支出 / 12', bRemain:'月次利用可能資金', bPct:'変動費への割当割合', bTarget:'目標変動費予算', bSaved:'残高 (Saved)', bOver:'予算超過 (Over Budget)'
+  }
 };
 let lang='zh-TW',T=LANGS[lang],apiKey='';
 
@@ -353,12 +410,17 @@ function applyT(){
   s('t-tax',T.taxTitle);s('t-taxsrc',T.taxSrc);s('t-loc',T.loc);
   s('t-ca',T.ca);s('t-as',T.as);
   s('t-mi',T.mI);s('t-mt',T.mT);s('t-me',T.mE);s('t-mn',T.mN);
-  s('t-li',T.lI);s('t-lt',T.lT);s('t-le',T.lE);s('t-ln',T.lN);
-  // api status
+  s('t-li',T.lI);s('t-lt',T.lT);s('t-le',T.lE);s('t-ln',T.lN); s('t-lf',T.lf);
+  
+  // Budget Text
+  s('t-budget-title', T.bTitle); s('t-budget-sec1', T.bSec1); s('t-budget-sec2', T.bSec2);
+  s('t-budget-aftertax', T.bAfterTax); s('t-budget-fixed', T.bFixed); s('t-budget-remain', T.bRemain);
+  s('t-budget-pct', T.bPct); s('t-budget-target', T.bTarget);
+  renderBudget(); // update dynamic text
+
   const st=document.getElementById('api-st');
   if(st)st.textContent=apiKey?(apiKey.startsWith('sk-ant-')?'✓  '+T.apiOk:'✗  '+T.apiErr):'';
   if(st)st.className='api-st'+(apiKey?(apiKey.startsWith('sk-ant-')?' ok':' err'):'');
-  // custom col enable/disable
   const btn=document.getElementById('parse-btn');
   const hint=document.getElementById('parse-hint');
   const hasKey=!!(apiKey&&apiKey.startsWith('sk-ant-'));
@@ -379,7 +441,8 @@ const SK='htf-v3';
 const DATA_VERSION=2;
 const DEF={
   income:[{name:'薪資',amt:80000,items:[]},{name:'副業',amt:5000,items:[]},{name:'投資',amt:2000,items:[]}],
-  expense:[{name:'住房',amt:0,items:[{name:'房租',amt:18000,x12:false}]},{name:'交通',amt:0,items:[{name:'油錢',amt:3600,x12:false},{name:'保險',amt:2400,x12:false}]},{name:'飲食',amt:0,items:[{name:'外食',amt:6000,x12:false},{name:'採買',amt:2000,x12:false}]},{name:'水電',amt:0,items:[{name:'電費',amt:1800,x12:false},{name:'網路',amt:1200,x12:false}]},{name:'其他',amt:0,items:[{name:'娛樂',amt:3000,x12:false},{name:'醫療',amt:2000,x12:false}]}]
+  expense:[{name:'住房',amt:0,fixed:true,adj:100,items:[{name:'房租',amt:18000,x12:false}]},{name:'交通',amt:0,adj:100,items:[{name:'油錢',amt:3600,x12:false},{name:'保險',amt:2400,x12:false}]},{name:'飲食',amt:0,adj:100,items:[{name:'外食',amt:6000,x12:false},{name:'採買',amt:2000,x12:false}]},{name:'水電',amt:0,fixed:true,adj:100,items:[{name:'電費',amt:1800,x12:false},{name:'網路',amt:1200,x12:false}]},{name:'其他',amt:0,adj:100,items:[{name:'娛樂',amt:3000,x12:false},{name:'醫療',amt:2000,x12:false}]}],
+  budgetPct: 80
 };
 let D,txChk={},selRgn=null,useCustom=false,txAmt=0,chart=null,saveTimer=null;
 
@@ -391,6 +454,8 @@ function loadData(){
       D=d;txChk=d.taxChecked||{};selRgn=d.selectedRegion||null;
       if(d.lang){lang=d.lang;T=LANGS[lang];}
       if(d.customTxt)document.getElementById('custom-ta').value=d.customTxt;
+      if(D.budgetPct===undefined) D.budgetPct = 80; // default 80%
+      D.expense.forEach(c => { if(c.adj===undefined) c.adj=100; });
     }else{
       D=JSON.parse(JSON.stringify(DEF));
       localStorage.removeItem(SK);
@@ -429,7 +494,10 @@ function calcTax(g,c){
   return 0;
 }
 const fmt=n=>'$'+Math.round(Math.abs(n)).toLocaleString();
-const iAmt=i=>i.x12?i.amt*12:i.amt;
+// Special fmt to handle explicit negative signs for budget display
+const fmtNum=n=>(n<0?'- ':'')+'$'+Math.round(Math.abs(n)).toLocaleString();
+
+const iAmt = i => (i.x12 ? i.amt * 12 : i.amt) * (i.tax15 ? 1.15 : 1);
 const catTot=c=>(c.items&&c.items.length>0)?c.items.reduce((s,i)=>s+iAmt(i),0):(c.amt||0);
 const txIncome=()=>D.income.filter(c=>txChk[c.name]!==false).reduce((s,c)=>s+catTot(c),0);
 
@@ -479,6 +547,21 @@ function renderCats(type){
     const db=document.createElement('button');db.className='aBtn del';db.textContent=T.del;
     db.onclick=()=>{D[type].splice(ci,1);schedSave();refresh();};
     acts.appendChild(ab);acts.appendChild(db);
+
+    if (type === 'expense') {
+      const fChk = document.createElement('input');
+      fChk.type = 'checkbox';
+      fChk.className = 'cat-fixed-chk';
+      fChk.title = '標示為固定開支';
+      fChk.checked = !!cat.fixed;
+      fChk.onchange = e => {
+        D[type][ci].fixed = e.target.checked;
+        schedSave();
+        refresh();
+      };
+      row.appendChild(fChk);
+    }
+    
     row.appendChild(nf);row.appendChild(ae);row.appendChild(acts);blk.appendChild(row);
     if(hasI){
       const sl=document.createElement('div');sl.className='sub-list';
@@ -490,13 +573,33 @@ function renderCats(type){
         const sa=document.createElement('input');sa.type='number';sa.className='sub-amt-inp';sa.value=item.amt;sa.min=0;sa.step='any';
         sa.onblur=e=>{const v=parseFloat(e.target.value);if(isNaN(v)||v<0){e.target.value=item.amt;return;}D[type][ci].items[ii].amt=v;schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else refresh();};
         sa.onkeydown=e=>{if(e.key==='Enter')e.target.blur();};
-        const xl=document.createElement('span');xl.className='sub-x12-lbl';xl.textContent=item.x12?`= ${fmt(iAmt(item))}`:'';
+        
+        const xl=document.createElement('span');
+        xl.className='sub-x12-lbl';
+        xl.textContent=(item.x12 || item.tax15) ? `= ${fmt(iAmt(item))}` : '';
+        
         const sacts=document.createElement('div');sacts.className='sub-acts';
         const xb=document.createElement('button');xb.className='sBtn'+(item.x12?' x12on':'');xb.textContent='×12';xb.title=item.x12?T.x12on:T.x12off;
         xb.onclick=()=>{D[type][ci].items[ii].x12=!D[type][ci].items[ii].x12;schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else refresh();};
+        sacts.appendChild(xb);
+        
+        if (type === 'expense') {
+          const tb = document.createElement('button');
+          tb.className = 'sBtn' + (item.tax15 ? ' taxon' : '');
+          tb.textContent = '×1.15';
+          tb.title = item.tax15 ? '已加15%稅，點擊取消' : '點擊加15%消費稅';
+          tb.onclick = () => {
+            D[type][ci].items[ii].tax15 = !D[type][ci].items[ii].tax15;
+            schedSave();
+            if(selRgn) recompute(); else if(useCustom) applyCustomTax(); else refresh();
+          };
+          sacts.appendChild(tb);
+        }
+        
         const xd=document.createElement('button');xd.className='sBtn del';xd.textContent=T.del;
         xd.onclick=()=>{D[type][ci].items.splice(ii,1);if(D[type][ci].items.length===0)D[type][ci].amt=0;schedSave();if(selRgn)recompute();else if(useCustom)applyCustomTax();else refresh();};
-        sacts.appendChild(xb);sacts.appendChild(xd);
+        sacts.appendChild(xd);
+        
         sr.appendChild(sn);sr.appendChild(sa);sr.appendChild(xl);sr.appendChild(sacts);sl.appendChild(sr);
       });
       blk.appendChild(sl);
@@ -524,7 +627,7 @@ function renderTaxCh(){
     el.appendChild(row);
   });
 }
-function addCat(type){const inp=document.getElementById('new-'+type+'-cat');const name=inp.value.trim();if(!name)return;D[type].push({name,amt:0,items:[]});inp.value='';schedSave();refresh();}
+function addCat(type){const inp=document.getElementById('new-'+type+'-cat');const name=inp.value.trim();if(!name)return;D[type].push({name,amt:0,adj:100,items:[]});inp.value='';schedSave();refresh();}
 function selectRegion(code){
   if(selRgn===code){selRgn=null;txAmt=0;document.getElementById('rbtn-'+code).classList.remove('active');document.getElementById('region-result').style.display='none';schedSave();renderMetrics();renderChart();return;}
   if(selRgn)document.getElementById('rbtn-'+selRgn).classList.remove('active');
@@ -537,6 +640,89 @@ function recompute(doR=true){
   box.innerHTML=`<strong>${info.name} — ${rate}%</strong> · ${T.mT} <strong style="color:var(--amber)">${fmt(tax)}</strong> (${info.cur})<br><span style="font-size:11px;font-family:var(--font-mono);color:var(--ink-faint)">${info.note}</span>`;
   if(doR){renderMetrics();renderChart();}
 }
+
+function renderBudget() {
+  const ti = D.income.reduce((s,c) => s + catTot(c), 0);
+  const afterTax = Math.max(0, ti - txAmt);
+  const fixedExp = D.expense.filter(c => c.fixed).reduce((s,c) => s + catTot(c), 0);
+  
+  const afterTaxMo = afterTax / 12;
+  const fixedMo = fixedExp / 12;
+  const remainMo = afterTaxMo - fixedMo;
+  
+  const pct = D.budgetPct !== undefined ? D.budgetPct : 80;
+  const targetBudget = Math.max(0, remainMo) * (pct / 100);
+
+  document.getElementById('b-aftertax').textContent = fmtNum(afterTaxMo);
+  document.getElementById('b-fixed').textContent = '- ' + fmt(fixedMo);
+  document.getElementById('b-remain').textContent = fmtNum(remainMo);
+  
+  const pctInp = document.getElementById('b-pct-inp');
+  if(document.activeElement !== pctInp) pctInp.value = pct;
+  pctInp.onchange = e => {
+    let v = parseFloat(e.target.value);
+    if(isNaN(v) || v < 0) v = 0;
+    D.budgetPct = v;
+    schedSave();
+    renderBudget();
+  };
+  
+  document.getElementById('b-target').textContent = fmt(targetBudget);
+
+  const varListEl = document.getElementById('b-var-list');
+  varListEl.innerHTML = '';
+  let totalVarAdj = 0;
+
+  const varExps = D.expense.filter(c => !c.fixed);
+  if(varExps.length === 0) {
+    varListEl.innerHTML = '<div style="font-size:12px;color:var(--ink-faint);font-style:italic">目前沒有非固定開支</div>';
+  } else {
+    varExps.forEach(cat => {
+      if (cat.adj === undefined) cat.adj = 100;
+      const ci = D.expense.indexOf(cat);
+      const annAmt = catTot(cat);
+      const moAmt = annAmt / 12;
+      const adjAmt = moAmt * (cat.adj / 100);
+      totalVarAdj += adjAmt;
+
+      const row = document.createElement('div');
+      row.className = 'b-row';
+      row.innerHTML = `
+        <span class="b-lbl">${cat.name} <span style="font-size:10px;color:var(--ink-faint)">(${fmt(moAmt)})</span></span>
+        <div class="b-inp-wrap">
+          <input type="number" class="b-inp var-adj" value="${cat.adj}" min="0" step="5" data-ci="${ci}"> %
+          <span class="b-val" style="width:68px;text-align:right">${fmt(adjAmt)}</span>
+        </div>
+      `;
+      varListEl.appendChild(row);
+    });
+
+    varListEl.querySelectorAll('.var-adj').forEach(inp => {
+      inp.onchange = e => {
+        let v = parseFloat(e.target.value);
+        if(isNaN(v) || v < 0) v = 100;
+        D.expense[e.target.dataset.ci].adj = v;
+        schedSave();
+        renderBudget();
+      };
+    });
+  }
+
+  const diff = targetBudget - totalVarAdj;
+  const resEl = document.getElementById('b-result');
+  const resLbl = document.getElementById('b-result-lbl');
+
+  if (diff >= 0) {
+    resLbl.textContent = T.bSaved || '結餘 (Saved)';
+    resEl.textContent = '+ ' + fmt(diff);
+    resEl.className = 'b-big-val b-res green';
+  } else {
+    resLbl.textContent = T.bOver || '超支 (Over Budget)';
+    resEl.textContent = '- ' + fmt(Math.abs(diff));
+    resEl.className = 'b-big-val b-res red';
+  }
+}
+
 function renderMetrics(){
   const ti=D.income.reduce((s,c)=>s+catTot(c),0);
   const te=D.expense.reduce((s,c)=>s+catTot(c),0);
@@ -544,7 +730,9 @@ function renderMetrics(){
   document.getElementById('m-income').textContent=fmt(ti);
   document.getElementById('m-tax').textContent=txAmt>0?fmt(txAmt):'—';
   document.getElementById('m-expense').textContent=fmt(te);
-  const mn=document.getElementById('m-net');mn.textContent=fmt(net);mn.className='metric-val'+(net>=0?' green':' red');
+  const mn=document.getElementById('m-net');mn.textContent=fmtNum(net);mn.className='metric-val'+(net>=0?' green':' red');
+
+  renderBudget(); // Call budget calculation whenever metrics update
 
   const ins=document.getElementById('insight');
   if(net<=0){
@@ -590,8 +778,21 @@ function renderChart(){
   const labels=[],floats=[],bars=[],colors=[],tips=[];let r=0;
   D.income.forEach(c=>{const t=catTot(c);labels.push(c.name);floats.push(r);bars.push(t);colors.push('#1D7A5A');tips.push([fmt(t),...(c.items&&c.items.length?c.items.map(i=>`${i.name}: ${fmt(iAmt(i))}${i.x12?' (×12)':''}`):[])]);r+=t;});
   if(txAmt>0){labels.push(T.lT);floats.push(r-txAmt);bars.push(txAmt);colors.push('#9A6B1A');tips.push(['-'+fmt(txAmt),T.mT]);r-=txAmt;}
-  D.expense.forEach(c=>{const t=catTot(c);labels.push(c.name);floats.push(r-t);bars.push(t);colors.push('#C43D2D');tips.push(['-'+fmt(t),...(c.items&&c.items.length?c.items.map(i=>`${i.name}: ${fmt(iAmt(i))}${i.x12?' (×12)':''}`):[])]);r-=t;});
-  labels.push(T.lN);floats.push(0);bars.push(Math.max(0,r));colors.push('#534AB7');tips.push([fmt(r),T.mN]);
+  
+  D.expense.forEach(c=>{
+    const t=catTot(c);
+    labels.push(c.name);
+    floats.push(r-t);
+    bars.push(t);
+    colors.push(c.fixed ? '#7F1D1D' : '#C43D2D');
+    tips.push([
+      '-' + fmt(t) + (c.fixed ? ' (固定開支)' : ''),
+      ...(c.items && c.items.length ? c.items.map(i => `${i.name}: ${fmt(iAmt(i))}${i.x12 ? ' (×12)' : ''}${i.tax15 ? ' (+15%)' : ''}`) : [])
+    ]);
+    r-=t;
+  });
+  
+  labels.push(T.lN);floats.push(0);bars.push(Math.max(0,r));colors.push('#534AB7');tips.push([fmtNum(r),T.mN]);
   if(chart)chart.destroy();
   chart=new Chart(document.getElementById('wfChart'),{
     type:'bar',
