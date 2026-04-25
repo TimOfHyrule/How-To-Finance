@@ -158,7 +158,7 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 .budget-grid { display: grid; grid-template-columns: 1.2fr 1.6fr 1fr; gap: 0; }
 .budget-sec { padding: 0 24px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
 .budget-sec:first-child { padding-left: 0; }
-.budget-sec:last-child { padding-right: 0; border-right: none; justify-content: center; align-items: center; text-align: center; }
+.budget-sec:last-child { padding-right: 0; border-right: none; justify-content: center; align-items: center; text-align: center; gap: 16px; }
 .b-title { font-size: 12px; font-weight: 500; color: var(--ink-mid); padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; font-family: var(--font-mono); letter-spacing: .05em; }
 .b-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
 .b-row .b-lbl { color: var(--ink-light); }
@@ -287,8 +287,14 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
         <div id="b-var-list" style="display:flex; flex-direction:column; gap:8px;"></div>
       </div>
       <div class="budget-sec">
-        <div class="b-title" style="border:none; padding:0; margin-bottom:8px;" id="b-result-lbl">結餘 / 超支</div>
-        <div id="b-result" class="b-big-val"></div>
+        <div style="width: 100%;">
+          <div class="b-title" style="border:none; padding:0; margin-bottom:4px;" id="t-budget-fs-lbl">固定月存</div>
+          <div id="b-fixed-savings" class="b-big-val" style="margin-top:0; font-size:22px; color:var(--green); margin-bottom:12px;"></div>
+        </div>
+        <div style="width: 100%;">
+          <div class="b-title" style="border:none; padding:0; margin-bottom:4px;" id="b-result-lbl">預算結餘 / 超支</div>
+          <div id="b-result" class="b-big-val" style="margin-top:0; font-size:22px;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -381,16 +387,16 @@ document.getElementById('custom-ta').placeholder =
 // i18n
 const LANGS={
   'zh-TW':{title:'財務盈餘分析儀',sub:'財富不是你賺了多少，而是你留住了多少。',income:'收入',expense:'支出',taxTitle:'稅務估算',taxSrc:'應稅收入來源',loc:'所在地',ca:'加拿大',as:'亞洲',mI:'總收入',mT:'估算稅額',mE:'總支出',mN:'可支配資金',lI:'收入',lT:'稅',lE:'支出',lf:'固定支出',lN:'淨現金',subItem:'細項',del:'✕',confirm:'確認',subName:'細項名稱',amt:'金額',addCat:'＋ 新增',saving:'儲存中...',saved:'已儲存 ✓',saveErr:'儲存失敗',loaded:'已載入',parseLoad:'AI 解析中…',parseErr:'解析失敗，請重試',iOver:'支出超過收入，差額',iReview:'。建議檢視最大支出類別。',iRate:'儲蓄率：',iAvail:'每年可支配資金',iLife:'，可用於提升生活品質。',iAfter:'稅後淨收入：',x12on:'已×12，點擊取消',x12off:'點擊換算年度（×12）',apiOk:'✓ Key 格式正確',apiErr:'✗ 格式不正確',noKey:'需要 API Key 才能使用',
-    bTitle:'每月預算規劃 (Monthly Budget)', bSec1:'1. 預算設定', bSec2:'2. 非固定開支分配', bAfterTax:'總稅後收入 / 12', bFixed:'固定開支 / 12', bRemain:'每月可用資金', bPct:'提撥為消費預算', bTarget:'非固定開支總目標', bSaved:'結餘 (Saved)', bOver:'超支 (Over Budget)'
+    bTitle:'每月預算規劃 (Monthly Budget)', bSec1:'1. 預算設定', bSec2:'2. 非固定開支分配', bAfterTax:'總稅後收入 / 12', bFixed:'固定開支 / 12', bRemain:'每月可用資金', bPct:'提撥為消費預算', bTarget:'非固定開支總目標', bSaved:'預算結餘', bOver:'預算超支', bFixedSave:'固定月存'
   },
   'zh-CN':{title:'现金流盈余分析仪',sub:'财富不是你赚了多少，而是你留住了多少。',income:'收入',expense:'支出',taxTitle:'税务估算',taxSrc:'应税收入来源',loc:'所在地',ca:'加拿大',as:'亚洲',mI:'总收入',mT:'估算税额',mE:'总支出',mN:'可支配资金',lI:'收入',lT:'税',lE:'支出',lf:'固定支出',lN:'净现金',subItem:'细项',del:'✕',confirm:'确认',subName:'细项名称',amt:'金额',addCat:'＋ 新增',saving:'保存中...',saved:'已保存 ✓',saveErr:'保存失败',loaded:'已载入',parseLoad:'AI 解析中…',parseErr:'解析失败，请重试',iOver:'支出超过收入，差额',iReview:'。建议检视最大支出类别。',iRate:'储蓄率：',iAvail:'每年可支配资金',iLife:'，可用于提升生活品质。',iAfter:'税后净收入：',x12on:'已×12，点击取消',x12off:'点击换算年度（×12）',apiOk:'✓ Key 格式正确',apiErr:'✗ 格式不正确',noKey:'需要 API Key 才能使用',
-    bTitle:'每月预算规划 (Monthly Budget)', bSec1:'1. 预算设定', bSec2:'2. 非固定开支分配', bAfterTax:'总税后收入 / 12', bFixed:'固定开支 / 12', bRemain:'每月可用资金', bPct:'提拨为消费预算', bTarget:'非固定开支总目标', bSaved:'结余 (Saved)', bOver:'超支 (Over Budget)'
+    bTitle:'每月预算规划 (Monthly Budget)', bSec1:'1. 预算设定', bSec2:'2. 非固定开支分配', bAfterTax:'总税后收入 / 12', bFixed:'固定开支 / 12', bRemain:'每月可用资金', bPct:'提拨为消费预算', bTarget:'非固定开支总目标', bSaved:'预算结余', bOver:'预算超支', bFixedSave:'固定月存'
   },
   'en':{title:'Financial Surplus Analyzer',sub:'Wealth is not how much you earn — it\'s how much you keep.',income:'Income',expense:'Expenses',taxTitle:'Tax Estimation',taxSrc:'Taxable income sources',loc:'Location',ca:'Canada',as:'Asia',mI:'Total income',mT:'Est. tax',mE:'Total expenses',mN:'Available funds',lI:'Income',lT:'Tax',lE:'Expenses',lf:'Fixed Expenses',lN:'Net cash',subItem:'Sub-item',del:'✕',confirm:'Add',subName:'Item name',amt:'Amount',addCat:'+ Add',saving:'Saving...',saved:'Saved ✓',saveErr:'Save failed',loaded:'Loaded',parseLoad:'AI parsing…',parseErr:'Parse failed, please retry',iOver:'Expenses exceed income by',iReview:'. Review your largest expense categories.',iRate:'Savings rate: ',iAvail:'Annual available:',iLife:' for life upgrades.',iAfter:'After-tax income: ',x12on:'×12 applied, click to remove',x12off:'Click to annualize (×12)',apiOk:'✓ Key format valid',apiErr:'✗ Invalid format',noKey:'API Key required',
-    bTitle:'Monthly Budget Planner', bSec1:'1. Budget Setup', bSec2:'2. Variable Allocations', bAfterTax:'After-Tax Income / 12', bFixed:'Fixed Expenses / 12', bRemain:'Available / Month', bPct:'Allocate to Variable %', bTarget:'Target Variable Budget', bSaved:'Saved', bOver:'Over Budget'
+    bTitle:'Monthly Budget Planner', bSec1:'1. Budget Setup', bSec2:'2. Variable Allocations', bAfterTax:'After-Tax Income / 12', bFixed:'Fixed Expenses / 12', bRemain:'Available / Month', bPct:'Allocate to Variable %', bTarget:'Target Variable Budget', bSaved:'Budget Saved', bOver:'Budget Over', bFixedSave:'Fixed Savings'
   },
   'ja':{title:'財務余剰分析',sub:'富とは稼いだ額ではなく、手元に残った額だ。',income:'収入',expense:'支出',taxTitle:'税務試算',taxSrc:'課税対象収入',loc:'所在地',ca:'カナダ',as:'アジア',mI:'総収入',mT:'推定税額',mE:'総支出',mN:'可処分資金',lI:'収入',lT:'税金',lE:'支出',lf:'固定支出',lN:'純現金',subItem:'サブ項目',del:'✕',confirm:'追加',subName:'項目名',amt:'金額',addCat:'＋ 追加',saving:'保存中...',saved:'自動保存 ✓',saveErr:'保存失敗',loaded:'読込完了',parseLoad:'AI解析中…',parseErr:'解析失敗。再試行してください',iOver:'支出が収入を超えています。差額：',iReview:'。最大の支出カテゴリを見直してください。',iRate:'貯蓄率：',iAvail:'年間可処分資金：',iLife:'（生活向上に活用可能）',iAfter:'税引後収入：',x12on:'×12適用中。クリックで解除',x12off:'クリックで年換算（×12）',apiOk:'✓ Key 形式OK',apiErr:'✗ 形式不正',noKey:'APIキーが必要です',
-    bTitle:'月次予算プランナー', bSec1:'1. 予算設定', bSec2:'2. 変動費の割当', bAfterTax:'税引後収入 / 12', bFixed:'固定支出 / 12', bRemain:'月次利用可能資金', bPct:'変動費への割当割合', bTarget:'目標変動費予算', bSaved:'残高 (Saved)', bOver:'予算超過 (Over Budget)'
+    bTitle:'月次予算プランナー', bSec1:'1. 予算設定', bSec2:'2. 変動費の割当', bAfterTax:'税引後収入 / 12', bFixed:'固定支出 / 12', bRemain:'月次利用可能資金', bPct:'変動費への割当割合', bTarget:'目標変動費予算', bSaved:'予算残高', bOver:'予算超過', bFixedSave:'固定貯蓄'
   }
 };
 let lang='zh-TW',T=LANGS[lang],apiKey='';
@@ -416,6 +422,7 @@ function applyT(){
   s('t-budget-title', T.bTitle); s('t-budget-sec1', T.bSec1); s('t-budget-sec2', T.bSec2);
   s('t-budget-aftertax', T.bAfterTax); s('t-budget-fixed', T.bFixed); s('t-budget-remain', T.bRemain);
   s('t-budget-pct', T.bPct); s('t-budget-target', T.bTarget);
+  s('t-budget-fs-lbl', T.bFixedSave);
   renderBudget(); // update dynamic text
 
   const st=document.getElementById('api-st');
@@ -652,16 +659,19 @@ function renderBudget() {
   
   const pct = D.budgetPct !== undefined ? D.budgetPct : 80;
   const targetBudget = Math.max(0, remainMo) * (pct / 100);
+  const fixedSavings = Math.max(0, remainMo - targetBudget);
 
   document.getElementById('b-aftertax').textContent = fmtNum(afterTaxMo);
   document.getElementById('b-fixed').textContent = '- ' + fmt(fixedMo);
   document.getElementById('b-remain').textContent = fmtNum(remainMo);
+  document.getElementById('b-fixed-savings').textContent = fmt(fixedSavings);
   
   const pctInp = document.getElementById('b-pct-inp');
   if(document.activeElement !== pctInp) pctInp.value = pct;
   pctInp.onchange = e => {
     let v = parseFloat(e.target.value);
     if(isNaN(v) || v < 0) v = 0;
+    if(v > 100) v = 100;
     D.budgetPct = v;
     schedSave();
     renderBudget();
@@ -713,11 +723,11 @@ function renderBudget() {
   const resLbl = document.getElementById('b-result-lbl');
 
   if (diff >= 0) {
-    resLbl.textContent = T.bSaved || '結餘 (Saved)';
+    resLbl.textContent = T.bSaved || '預算結餘';
     resEl.textContent = '+ ' + fmt(diff);
     resEl.className = 'b-big-val b-res green';
   } else {
-    resLbl.textContent = T.bOver || '超支 (Over Budget)';
+    resLbl.textContent = T.bOver || '預算超支';
     resEl.textContent = '- ' + fmt(Math.abs(diff));
     resEl.className = 'b-big-val b-res red';
   }
